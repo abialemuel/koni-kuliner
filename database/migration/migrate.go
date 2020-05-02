@@ -17,6 +17,14 @@ var create_table_products = "CREATE TABLE IF NOT EXISTS products (" +
 	"PRIMARY KEY (`id`)" +
 	") ENGINE = InnoDB DEFAULT CHARSET = utf8"
 
+var create_table_outlets = "CREATE TABLE IF NOT EXISTS outlets (" +
+	"`id` INT(11) NOT NULL AUTO_INCREMENT," +
+	"`name` VARCHAR(55) NOT NULL," +
+	"`created_at` DATETIME DEFAULT NULL," +
+	"`updated_at` DATETIME DEFAULT NULL," +
+	"PRIMARY KEY (`id`)" +
+	") ENGINE = InnoDB DEFAULT CHARSET = utf8"
+
 func main() {
 	_ = gotenv.Load()
 	port := os.Getenv("DATABASE_PORT")
@@ -37,5 +45,6 @@ func main() {
 	}
 
 	db.MustExec(create_table_products)
+	db.MustExec(create_table_outlets)
 	log.Println("DONE")
 }
