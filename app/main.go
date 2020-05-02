@@ -13,6 +13,7 @@ import (
 
 func main() {
 	db := database.InitMysql()
+	// models.DBMigrate(db)
 	productHandler := handler.NewProductHandler(db)
 
 	router := httprouter.New()

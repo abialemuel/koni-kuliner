@@ -22,7 +22,6 @@ func NewProductHandler(db *gorm.DB) *Mysql {
 func (conn *Mysql) GetProducts(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	model := []models.Product{}
 	conn.db.Find(&model)
-
 	result := utility.ProductResponse(model)
 	utility.SendSuccessResponse(w, result, http.StatusOK)
 }
