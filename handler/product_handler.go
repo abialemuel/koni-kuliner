@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"encoding/json"
 	"net/http"
 	"strconv"
 	"time"
@@ -12,7 +11,7 @@ import (
 	"github.com/koni-kuliner/models"
 	"github.com/koni-kuliner/resource/request"
 	"github.com/koni-kuliner/utility"
-	"github.com/prometheus/common/log"
+	"github.com/thedevsaddam/govalidator"
 )
 
 type Mysql struct {
@@ -56,17 +55,15 @@ func (mysql *Mysql) CreateProduct(w http.ResponseWriter, r *http.Request, params
 	// assign params
 	var productRequest request.ProductCreateRequest
 
-	err := json.NewDecoder(r.Body).Decode(&productRequest)
+	// validate body params
+	err := validateRequest(r, &productRequest)
+
 	if err != nil {
-		log.Error(err, map[string]interface{}{
-			"tags": []string{"create_product", "decode_request"},
-			"request": map[string]interface{}{
-				"status_code": 422,
-			},
-		})
-		utility.SendErrorResponse(w, entity.FailedDecodeJSONError)
+		utility.SendErrorResponse(w, entity.UnprocessableEntityError)
+		return
 	}
 
+	// assign body params
 	model := models.Product{
 		Name:      productRequest.Name,
 		CreatedAt: time.Now(),
@@ -76,10 +73,29 @@ func (mysql *Mysql) CreateProduct(w http.ResponseWriter, r *http.Request, params
 	mysql.db.Create(&model)
 	result := utility.ProductDetailResponse(model)
 	utility.SendSuccessResponse(w, result, http.StatusCreated)
+	// return err
 }
 
 func CountProduct(mysql *Mysql) int {
 	var count int
 	mysql.db.Table("products").Count(&count)
 	return count
+}
+
+func validateRequest(r *http.Request, payload *request.ProductCreateRequest) map[string]interface{} {
+	rules := govalidator.MapData{
+		"name": []string{"required"},
+	}
+
+	v := govalidator.New(govalidator.Options{
+		Request: r,
+		Data:    payload,
+		Rules:   rules,
+	})
+
+	if err := v.Validate(); len(err) != 0 {
+		return map[string]interface{}{"validationError": err}
+	}
+
+	return nil
 }

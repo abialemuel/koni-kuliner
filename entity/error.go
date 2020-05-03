@@ -39,4 +39,9 @@ var (
 		Code:       67104,
 		HttpStatus: http.StatusUnauthorized,
 	}
+	UnprocessableEntityError = CustomError{
+		Message:    "Unprocessable Entity",
+		Code:       67105,
+		HttpStatus: http.StatusUnprocessableEntity,
+	}
 )
