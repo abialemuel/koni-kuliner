@@ -24,8 +24,7 @@ func SendSuccessResponse(w http.ResponseWriter, data interface{}, statusCode int
 
 func SendSuccessResponseWithLimitAndOffset(w http.ResponseWriter, data interface{}, statusCode int, mapper map[string][]string, count int) {
 	limit, _ := strconv.Atoi(mapper["limit"][0])
-	offset, _ := strconv.Atoi(mapper["meta_offset"][0])
-
+	offset, _ := strconv.Atoi(mapper["offset"][0])
 	response := response.SuccessResponseWithMeta{
 		Data: data,
 		Meta: response.MetaInfoWithOffsetAndLimit{

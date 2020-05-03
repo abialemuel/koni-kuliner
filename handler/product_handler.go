@@ -19,9 +19,25 @@ func NewProductHandler(db *gorm.DB) *Mysql {
 	}
 }
 
-func (conn *Mysql) GetProducts(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	model := []models.Product{}
-	conn.db.Find(&model)
+func (mysql *Mysql) GetProducts(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	var filteredArgs []interface{}
+
+	// filter query params
+	filter := utility.Filter(r, []string{"offset", "limit"})
+
+	// build query
+	query := "SELECT * FROM products WHERE 1=1"
+	query, filteredArgs = utility.AppendQuery(query, filter)
+
+	// run query
+	var model []models.Product
+	mysql.db.Raw(query, filteredArgs...).Scan(&model)
 	result := utility.ProductResponse(model)
-	utility.SendSuccessResponse(w, result, http.StatusOK)
+	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, Count(mysql))
+}
+
+func Count(mysql *Mysql) int {
+	var count int
+	mysql.db.Table("products").Count(&count)
+	return count
 }

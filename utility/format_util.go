@@ -1,7 +1,10 @@
 package utility
 
 import (
+	"fmt"
 	"net/http"
+
+	"github.com/jmoiron/sqlx"
 )
 
 func Btoi(boolean bool) int {
@@ -19,4 +22,41 @@ func Filter(r *http.Request, searchList []string) map[string][]string {
 		}
 	}
 	return f
+}
+
+func AppendQuery(query string, f map[string][]string) (string, []interface{}) {
+	args := []interface{}{}
+	if f["id"] != nil {
+		ids := f["id"]
+		newQuery, newArgs, _ := sqlx.In(" AND ID IN (?) ", ids)
+		args = append(args, newArgs...)
+		query += newQuery
+	}
+
+	if f["name"] != nil {
+		name := f["name"]
+		newQuery, newArgs, _ := sqlx.In(" AND name IN (?) ", name)
+		args = append(args, newArgs...)
+		query += newQuery
+	}
+
+	if f["limit"] == nil {
+		args = append(args, fmt.Sprint(20))
+		f["limit"] = []string{"20"}
+		query += " LIMIT ?"
+	} else {
+		args = append(args, f["limit"][0])
+		query += " LIMIT ? "
+	}
+
+	if f["offset"] == nil {
+		args = append(args, fmt.Sprint(0))
+		f["offset"] = []string{"0"}
+		query += " OFFSET ?"
+	} else {
+		args = append(args, f["offset"][0])
+		query += " OFFSET ?"
+	}
+
+	return query, args
 }
