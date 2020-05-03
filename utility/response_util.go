@@ -6,8 +6,7 @@ import (
 	"strconv"
 
 	"github.com/koni-kuliner/entity"
-	"github.com/koni-kuliner/models"
-	response "github.com/koni-kuliner/resource"
+	"github.com/koni-kuliner/resource/response"
 )
 
 func SendSuccessResponse(w http.ResponseWriter, data interface{}, statusCode int) {
@@ -56,18 +55,4 @@ func SendErrorResponse(w http.ResponseWriter, err entity.CustomError) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(response.Meta.HttpStatus)
 	_ = json.NewEncoder(w).Encode(&response)
-}
-
-func ProductResponse(product []models.Product) []response.ProductResponse {
-	var returnedResponse []response.ProductResponse
-	for _, product := range product {
-		singleResponse := response.ProductResponse{
-			ID:        product.ID,
-			Name:      product.Name,
-			CreatedAt: product.CreatedAt,
-			UpdatedAt: product.UpdatedAt,
-		}
-		returnedResponse = append(returnedResponse, singleResponse)
-	}
-	return returnedResponse
 }

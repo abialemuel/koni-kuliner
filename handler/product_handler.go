@@ -1,12 +1,18 @@
 package handler
 
 import (
+	"encoding/json"
 	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/jinzhu/gorm"
 	"github.com/julienschmidt/httprouter"
+	"github.com/koni-kuliner/entity"
 	"github.com/koni-kuliner/models"
+	"github.com/koni-kuliner/resource/request"
 	"github.com/koni-kuliner/utility"
+	"github.com/prometheus/common/log"
 )
 
 type Mysql struct {
@@ -23,7 +29,7 @@ func (mysql *Mysql) GetProducts(w http.ResponseWriter, r *http.Request, params h
 	var filteredArgs []interface{}
 
 	// filter query params
-	filter := utility.Filter(r, []string{"offset", "limit"})
+	filter := utility.Filter(r, []string{"id", "name", "offset", "limit"})
 
 	// build query
 	query := "SELECT * FROM products WHERE 1=1"
@@ -33,10 +39,46 @@ func (mysql *Mysql) GetProducts(w http.ResponseWriter, r *http.Request, params h
 	var model []models.Product
 	mysql.db.Raw(query, filteredArgs...).Scan(&model)
 	result := utility.ProductResponse(model)
-	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, Count(mysql))
+	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, CountProduct(mysql))
 }
 
-func Count(mysql *Mysql) int {
+func (mysql *Mysql) GetProductDetails(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	productID, _ := strconv.ParseInt(params.ByName("ID"), 10, 64)
+
+	// run query
+	var model models.Product
+	mysql.db.First(&model, productID)
+	result := utility.ProductDetailResponse(model)
+	utility.SendSuccessResponse(w, result, http.StatusOK)
+}
+
+func (mysql *Mysql) CreateProduct(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	// assign params
+	var productRequest request.ProductCreateRequest
+
+	err := json.NewDecoder(r.Body).Decode(&productRequest)
+	if err != nil {
+		log.Error(err, map[string]interface{}{
+			"tags": []string{"create_product", "decode_request"},
+			"request": map[string]interface{}{
+				"status_code": 422,
+			},
+		})
+		utility.SendErrorResponse(w, entity.FailedDecodeJSONError)
+	}
+
+	model := models.Product{
+		Name:      productRequest.Name,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+
+	mysql.db.Create(&model)
+	result := utility.ProductDetailResponse(model)
+	utility.SendSuccessResponse(w, result, http.StatusCreated)
+}
+
+func CountProduct(mysql *Mysql) int {
 	var count int
 	mysql.db.Table("products").Count(&count)
 	return count

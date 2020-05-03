@@ -22,6 +22,8 @@ func main() {
 
 	// products resource
 	router.GET("/products", utility.BasicAuth(productHandler.GetProducts))
+	router.GET("/products/:ID", utility.BasicAuth(productHandler.GetProductDetails))
+	router.POST("/products", utility.BasicAuth(productHandler.CreateProduct))
 
 	fmt.Println("Connected to port 5000")
 	log.Fatal(http.ListenAndServe(":5000", router))
