@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"net/http"
 	"strconv"
 	"time"
@@ -11,7 +12,7 @@ import (
 	"github.com/koni-kuliner/models"
 	"github.com/koni-kuliner/resource/request"
 	"github.com/koni-kuliner/utility"
-	"github.com/thedevsaddam/govalidator"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 type Mysql struct {
@@ -55,10 +56,19 @@ func (mysql *Mysql) CreateProduct(w http.ResponseWriter, r *http.Request, params
 	// assign params
 	var productRequest request.ProductCreateRequest
 
+	// decode params
+	err := json.NewDecoder(r.Body).Decode(&productRequest)
+	if err != nil {
+		utility.SendErrorResponse(w, entity.FailedDecodeJSONError)
+		return
+	}
+
 	// validate body params
-	err := validateRequest(r, &productRequest)
+	v := validator.New()
+	err = v.Struct(productRequest)
 
 	if err != nil {
+		println("error: " + err.Error())
 		utility.SendErrorResponse(w, entity.UnprocessableEntityError)
 		return
 	}
@@ -80,22 +90,4 @@ func CountProduct(mysql *Mysql) int {
 	var count int
 	mysql.db.Table("products").Count(&count)
 	return count
-}
-
-func validateRequest(r *http.Request, payload *request.ProductCreateRequest) map[string]interface{} {
-	rules := govalidator.MapData{
-		"name": []string{"required"},
-	}
-
-	v := govalidator.New(govalidator.Options{
-		Request: r,
-		Data:    payload,
-		Rules:   rules,
-	})
-
-	if err := v.Validate(); len(err) != 0 {
-		return map[string]interface{}{"validationError": err}
-	}
-
-	return nil
 }
