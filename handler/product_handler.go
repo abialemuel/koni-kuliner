@@ -6,7 +6,6 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/jinzhu/gorm"
 	"github.com/julienschmidt/httprouter"
 	"github.com/koni-kuliner/entity"
 	"github.com/koni-kuliner/models"
@@ -14,16 +13,6 @@ import (
 	"github.com/koni-kuliner/utility"
 	"gopkg.in/go-playground/validator.v9"
 )
-
-type Mysql struct {
-	db *gorm.DB
-}
-
-func NewProductHandler(db *gorm.DB) *Mysql {
-	return &Mysql{
-		db: db,
-	}
-}
 
 func (mysql *Mysql) GetProducts(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	var filteredArgs []interface{}
@@ -47,7 +36,12 @@ func (mysql *Mysql) GetProductDetails(w http.ResponseWriter, r *http.Request, pa
 
 	// run query
 	var model models.Product
-	mysql.db.First(&model, productID)
+
+	if mysql.db.First(&model, productID).RecordNotFound() {
+		utility.SendErrorResponse(w, entity.ProductNotFoundError)
+		return
+	}
+
 	result := utility.ProductDetailResponse(model)
 	utility.SendSuccessResponse(w, result, http.StatusOK)
 }

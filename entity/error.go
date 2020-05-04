@@ -44,4 +44,14 @@ var (
 		Code:       67105,
 		HttpStatus: http.StatusUnprocessableEntity,
 	}
+	ProductNotFoundError = CustomError{
+		Message:    "Product not found",
+		Code:       67111,
+		HttpStatus: http.StatusNotFound,
+	}
+	OutletNotFoundError = CustomError{
+		Message:    "Outlet not found",
+		Code:       67111,
+		HttpStatus: http.StatusNotFound,
+	}
 )
