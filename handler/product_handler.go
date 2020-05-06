@@ -28,7 +28,7 @@ func (mysql *Mysql) GetProducts(w http.ResponseWriter, r *http.Request, params h
 	var model []models.Product
 	mysql.db.Raw(query, filteredArgs...).Scan(&model)
 	result := utility.ProductResponse(model)
-	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, CountProduct(mysql))
+	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, countProduct(mysql))
 }
 
 func (mysql *Mysql) GetProductDetails(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
@@ -37,6 +37,7 @@ func (mysql *Mysql) GetProductDetails(w http.ResponseWriter, r *http.Request, pa
 	// run query
 	var model models.Product
 
+	// return not found is record not exist
 	if mysql.db.First(&model, productID).RecordNotFound() {
 		utility.SendErrorResponse(w, entity.ProductNotFoundError)
 		return
@@ -47,10 +48,9 @@ func (mysql *Mysql) GetProductDetails(w http.ResponseWriter, r *http.Request, pa
 }
 
 func (mysql *Mysql) CreateProduct(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	// assign params
+	// decode params
 	var productRequest request.ProductCreateRequest
 
-	// decode params
 	err := json.NewDecoder(r.Body).Decode(&productRequest)
 	if err != nil {
 		utility.SendErrorResponse(w, entity.FailedDecodeJSONError)
@@ -77,10 +77,61 @@ func (mysql *Mysql) CreateProduct(w http.ResponseWriter, r *http.Request, params
 	mysql.db.Create(&model)
 	result := utility.ProductDetailResponse(model)
 	utility.SendSuccessResponse(w, result, http.StatusCreated)
-	// return err
 }
 
-func CountProduct(mysql *Mysql) int {
+func (mysql *Mysql) UpdateProduct(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	productID, _ := strconv.ParseInt(params.ByName("ID"), 10, 64)
+
+	// run query
+	var model models.Product
+
+	// return not found if record not exist
+	if mysql.db.First(&model, productID).RecordNotFound() {
+		utility.SendErrorResponse(w, entity.ProductNotFoundError)
+		return
+	}
+
+	var productRequest request.ProductUpdateRequest
+
+	err := json.NewDecoder(r.Body).Decode(&productRequest)
+	if err != nil {
+		utility.SendErrorResponse(w, entity.FailedDecodeJSONError)
+		return
+	}
+
+	// validate body params
+	v := validator.New()
+	err = v.Struct(productRequest)
+
+	if err != nil {
+		println("error: " + err.Error())
+		utility.SendErrorResponse(w, entity.UnprocessableEntityError)
+		return
+	}
+
+	mysql.db.Model(&model).Updates(productRequest)
+	result := utility.ProductDetailResponse(model)
+	utility.SendSuccessResponse(w, result, http.StatusOK)
+}
+
+func (mysql *Mysql) DeleteProduct(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	productID, _ := strconv.ParseInt(params.ByName("ID"), 10, 64)
+
+	// run query
+	var model models.Product
+
+	// return not found if record not exist
+	if mysql.db.First(&model, productID).RecordNotFound() {
+		utility.SendErrorResponse(w, entity.ProductNotFoundError)
+		return
+	}
+	mysql.db.Delete(&model)
+	w.WriteHeader(http.StatusOK)
+}
+
+// private func
+
+func countProduct(mysql *Mysql) int {
 	var count int
 	mysql.db.Table("products").Count(&count)
 	return count

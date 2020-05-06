@@ -28,7 +28,7 @@ func (mysql *Mysql) GetOutlets(w http.ResponseWriter, r *http.Request, params ht
 	var model []models.Outlet
 	mysql.db.Raw(query, filteredArgs...).Scan(&model)
 	result := utility.OutletResponse(model)
-	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, CountOutlet(mysql))
+	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, countOutlet(mysql))
 }
 
 func (mysql *Mysql) GetOutletDetails(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
@@ -37,6 +37,7 @@ func (mysql *Mysql) GetOutletDetails(w http.ResponseWriter, r *http.Request, par
 	// run query
 	var model models.Outlet
 
+	// return not found if record not exist
 	if mysql.db.First(&model, outletID).RecordNotFound() {
 		utility.SendErrorResponse(w, entity.OutletNotFoundError)
 		return
@@ -47,10 +48,9 @@ func (mysql *Mysql) GetOutletDetails(w http.ResponseWriter, r *http.Request, par
 }
 
 func (mysql *Mysql) CreateOutlet(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	// assign params
+	// decode params
 	var outletRequest request.OutletCreateRequest
 
-	// decode params
 	err := json.NewDecoder(r.Body).Decode(&outletRequest)
 	if err != nil {
 		utility.SendErrorResponse(w, entity.FailedDecodeJSONError)
@@ -77,10 +77,61 @@ func (mysql *Mysql) CreateOutlet(w http.ResponseWriter, r *http.Request, params 
 	mysql.db.Create(&model)
 	result := utility.OutletDetailResponse(model)
 	utility.SendSuccessResponse(w, result, http.StatusCreated)
-	// return err
 }
 
-func CountOutlet(mysql *Mysql) int {
+func (mysql *Mysql) UpdateOutlet(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	outletID, _ := strconv.ParseInt(params.ByName("ID"), 10, 64)
+
+	// run query
+	var model models.Outlet
+
+	// return not found if record not exist
+	if mysql.db.First(&model, outletID).RecordNotFound() {
+		utility.SendErrorResponse(w, entity.OutletNotFoundError)
+		return
+	}
+
+	var outletRequest request.OutletUpdateRequest
+
+	err := json.NewDecoder(r.Body).Decode(&outletRequest)
+	if err != nil {
+		utility.SendErrorResponse(w, entity.FailedDecodeJSONError)
+		return
+	}
+
+	// validate body params
+	v := validator.New()
+	err = v.Struct(outletRequest)
+
+	if err != nil {
+		println("error: " + err.Error())
+		utility.SendErrorResponse(w, entity.UnprocessableEntityError)
+		return
+	}
+
+	mysql.db.Model(&model).Updates(outletRequest)
+	result := utility.OutletDetailResponse(model)
+	utility.SendSuccessResponse(w, result, http.StatusOK)
+}
+
+func (mysql *Mysql) DeleteOutlet(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	outletID, _ := strconv.ParseInt(params.ByName("ID"), 10, 64)
+
+	// run query
+	var model models.Outlet
+
+	// return not found if record not exist
+	if mysql.db.First(&model, outletID).RecordNotFound() {
+		utility.SendErrorResponse(w, entity.OutletNotFoundError)
+		return
+	}
+	mysql.db.Delete(&model)
+	w.WriteHeader(http.StatusOK)
+}
+
+// private func
+
+func countOutlet(mysql *Mysql) int {
 	var count int
 	mysql.db.Table("outlets").Count(&count)
 	return count
