@@ -26,6 +26,14 @@ func Filter(r *http.Request, searchList []string) map[string][]string {
 
 func AppendQuery(query string, f map[string][]string) (string, []interface{}) {
 	args := []interface{}{}
+	if f["address"] != nil {
+		address := f["address"]
+		addressLike := "%" + address[0] + "%"
+		newQuery, newArgs, _ := sqlx.In(" AND name LIKE ? ", addressLike)
+		args = append(args, newArgs...)
+		query += newQuery
+	}
+
 	if f["id"] != nil {
 		ids := f["id"]
 		newQuery, newArgs, _ := sqlx.In(" AND ID IN (?) ", ids)

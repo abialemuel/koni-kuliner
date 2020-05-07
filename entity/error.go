@@ -54,4 +54,9 @@ var (
 		Code:       67111,
 		HttpStatus: http.StatusNotFound,
 	}
+	CustomerNotFoundError = CustomError{
+		Message:    "Customer not found",
+		Code:       67111,
+		HttpStatus: http.StatusNotFound,
+	}
 )
