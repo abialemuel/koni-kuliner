@@ -34,6 +34,13 @@ func main() {
 	router.POST("/outlets", utility.BasicAuth(newHandler.CreateOutlet))
 	router.DELETE("/outlets/:ID", utility.BasicAuth(newHandler.DeleteOutlet))
 
+	// customers resource
+	router.GET("/customers", utility.BasicAuth(newHandler.GetCustomers))
+	router.GET("/customers/:ID", utility.BasicAuth(newHandler.GetCustomerDetails))
+	router.PATCH("/customers/:ID", utility.BasicAuth(newHandler.UpdateCustomer))
+	router.POST("/customers", utility.BasicAuth(newHandler.CreateCustomer))
+	router.DELETE("/customers/:ID", utility.BasicAuth(newHandler.DeleteCustomer))
+
 	fmt.Println("Connected to port 5000")
 	log.Fatal(http.ListenAndServe(":5000", router))
 }

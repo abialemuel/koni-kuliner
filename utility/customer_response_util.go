@@ -11,6 +11,8 @@ func CustomerResponse(customer []models.Customer) []response.CustomerResponse {
 		singleResponse := response.CustomerResponse{
 			ID:        customer.ID,
 			Name:      customer.Name,
+			Address:   customer.Address,
+			Phone:     customer.Phone,
 			CreatedAt: customer.CreatedAt,
 			UpdatedAt: customer.UpdatedAt,
 		}
@@ -24,6 +26,8 @@ func CustomerDetailResponse(customer models.Customer) response.CustomerResponse 
 	singleResponse := response.CustomerResponse{
 		ID:        customer.ID,
 		Name:      customer.Name,
+		Address:   customer.Address,
+		Phone:     customer.Phone,
 		CreatedAt: customer.CreatedAt,
 		UpdatedAt: customer.UpdatedAt,
 	}

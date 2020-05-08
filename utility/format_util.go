@@ -29,7 +29,7 @@ func AppendQuery(query string, f map[string][]string) (string, []interface{}) {
 	if f["address"] != nil {
 		address := f["address"]
 		addressLike := "%" + address[0] + "%"
-		newQuery, newArgs, _ := sqlx.In(" AND name LIKE ? ", addressLike)
+		newQuery, newArgs, _ := sqlx.In(" AND address LIKE ? ", addressLike)
 		args = append(args, newArgs...)
 		query += newQuery
 	}

@@ -70,6 +70,8 @@ func (mysql *Mysql) CreateCustomer(w http.ResponseWriter, r *http.Request, param
 	// assign body params
 	model := models.Customer{
 		Name:      customerRequest.Name,
+		Address:   customerRequest.Address,
+		Phone:     customerRequest.Phone,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
