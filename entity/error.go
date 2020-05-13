@@ -49,13 +49,28 @@ var (
 		Code:       67111,
 		HttpStatus: http.StatusNotFound,
 	}
+	ProductNotValidError = CustomError{
+		Message:    "Product not valid",
+		Code:       67112,
+		HttpStatus: http.StatusUnprocessableEntity,
+	}
 	OutletNotFoundError = CustomError{
 		Message:    "Outlet not found",
 		Code:       67111,
 		HttpStatus: http.StatusNotFound,
 	}
+	OutletNotValidError = CustomError{
+		Message:    "Outlet not valid",
+		Code:       67112,
+		HttpStatus: http.StatusUnprocessableEntity,
+	}
 	CustomerNotFoundError = CustomError{
 		Message:    "Customer not found",
+		Code:       67111,
+		HttpStatus: http.StatusNotFound,
+	}
+	OutletProductNotFoundError = CustomError{
+		Message:    "Outlet Product not found",
 		Code:       67111,
 		HttpStatus: http.StatusNotFound,
 	}

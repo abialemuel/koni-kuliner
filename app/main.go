@@ -20,12 +20,12 @@ func main() {
 	router.GET("/healthz", handler.HealthzHandler)
 	router.GET("/metrics", handler.MetricHandler)
 
-	// products resource
-	router.GET("/products", utility.BasicAuth(newHandler.GetProducts))
-	router.GET("/products/:ID", utility.BasicAuth(newHandler.GetProductDetails))
-	router.PATCH("/products/:ID", utility.BasicAuth(newHandler.UpdateProduct))
-	router.POST("/products", utility.BasicAuth(newHandler.CreateProduct))
-	router.DELETE("/products/:ID", utility.BasicAuth(newHandler.DeleteProduct))
+	// customers resource
+	router.GET("/customers", utility.BasicAuth(newHandler.GetCustomers))
+	router.GET("/customers/:ID", utility.BasicAuth(newHandler.GetCustomerDetails))
+	router.PATCH("/customers/:ID", utility.BasicAuth(newHandler.UpdateCustomer))
+	router.POST("/customers", utility.BasicAuth(newHandler.CreateCustomer))
+	router.DELETE("/customers/:ID", utility.BasicAuth(newHandler.DeleteCustomer))
 
 	// outlets resource
 	router.GET("/outlets", utility.BasicAuth(newHandler.GetOutlets))
@@ -34,12 +34,18 @@ func main() {
 	router.POST("/outlets", utility.BasicAuth(newHandler.CreateOutlet))
 	router.DELETE("/outlets/:ID", utility.BasicAuth(newHandler.DeleteOutlet))
 
-	// customers resource
-	router.GET("/customers", utility.BasicAuth(newHandler.GetCustomers))
-	router.GET("/customers/:ID", utility.BasicAuth(newHandler.GetCustomerDetails))
-	router.PATCH("/customers/:ID", utility.BasicAuth(newHandler.UpdateCustomer))
-	router.POST("/customers", utility.BasicAuth(newHandler.CreateCustomer))
-	router.DELETE("/customers/:ID", utility.BasicAuth(newHandler.DeleteCustomer))
+	// outlet products resource
+	router.GET("/outlet-products", utility.BasicAuth(newHandler.GetOutletProducts))
+	router.GET("/outlet-products/:ID", utility.BasicAuth(newHandler.GetOutletProductDetails))
+	router.PATCH("/outlet-products/:ID", utility.BasicAuth(newHandler.UpdateOutletProduct))
+	router.POST("/outlet-products", utility.BasicAuth(newHandler.CreateOutletProduct))
+
+	// products resource
+	router.GET("/products", utility.BasicAuth(newHandler.GetProducts))
+	router.GET("/products/:ID", utility.BasicAuth(newHandler.GetProductDetails))
+	router.PATCH("/products/:ID", utility.BasicAuth(newHandler.UpdateProduct))
+	router.POST("/products", utility.BasicAuth(newHandler.CreateProduct))
+	router.DELETE("/products/:ID", utility.BasicAuth(newHandler.DeleteProduct))
 
 	fmt.Println("Connected to port 5000")
 	log.Fatal(http.ListenAndServe(":5000", router))

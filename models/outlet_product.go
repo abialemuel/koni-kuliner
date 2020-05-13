@@ -4,20 +4,30 @@ import (
 	"time"
 )
 
-type StateType uint8
+type OutletProductStateType uint8
 
 const (
-	Active StateType = iota
-	Inactive
+	OutletProductStateInactive OutletProductStateType = iota + 1
+	OutletProductStateActive
 )
 
 type OutletProduct struct {
 	ID         int64
-	OutletID   string
-	ProductID  string
+	OutletID   int
+	ProductID  int
 	Price      int
 	OrderPrice int
-	State      StateType
+	Product    Product
+	Outlet     Outlet
+	State      OutletProductStateType
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+}
+
+func (s OutletProductStateType) ToString() string {
+	types := map[OutletProductStateType]string{
+		OutletProductStateActive:   "active",
+		OutletProductStateInactive: "inactive",
+	}
+	return types[s]
 }
