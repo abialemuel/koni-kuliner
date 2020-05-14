@@ -64,6 +64,16 @@ var (
 		Code:       67112,
 		HttpStatus: http.StatusUnprocessableEntity,
 	}
+	BrandNotFoundError = CustomError{
+		Message:    "Brand not found",
+		Code:       67111,
+		HttpStatus: http.StatusNotFound,
+	}
+	BrandNotValidError = CustomError{
+		Message:    "Brand not valid",
+		Code:       67112,
+		HttpStatus: http.StatusUnprocessableEntity,
+	}
 	CustomerNotFoundError = CustomError{
 		Message:    "Customer not found",
 		Code:       67111,

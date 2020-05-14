@@ -20,6 +20,13 @@ func main() {
 	router.GET("/healthz", handler.HealthzHandler)
 	router.GET("/metrics", handler.MetricHandler)
 
+	// brands resource
+	router.GET("/brands", utility.BasicAuth(newHandler.GetBrands))
+	router.GET("/brands/:ID", utility.BasicAuth(newHandler.GetBrandDetails))
+	router.PATCH("/brands/:ID", utility.BasicAuth(newHandler.UpdateBrand))
+	router.POST("/brands", utility.BasicAuth(newHandler.CreateBrand))
+	router.DELETE("/brands/:ID", utility.BasicAuth(newHandler.DeleteBrand))
+
 	// customers resource
 	router.GET("/customers", utility.BasicAuth(newHandler.GetCustomers))
 	router.GET("/customers/:ID", utility.BasicAuth(newHandler.GetCustomerDetails))
