@@ -71,14 +71,15 @@ var create_table_cart_items = "CREATE TABLE IF NOT EXISTS cart_items (" +
 
 var create_table_transactions = "CREATE TABLE IF NOT EXISTS transactions (" +
 	"`id` INT(11) NOT NULL AUTO_INCREMENT," +
-	"`user_id_id` INT(11) DEFAULT NULL," +
-	"`cart_item_id` INT(11) DEFAULT NULL," +
+	"`user_id` INT(11) DEFAULT NULL," +
 	"`amount` BIGINT DEFAULT 0," +
-	"`created_at` DATETIME DEFAULT NULL," +
-	"`updated_at` DATETIME DEFAULT NULL," +
 	"`po_date` DATETIME DEFAULT NULL," +
 	"`state` TINYINT(1) DEFAULT 0," +
+	"`delivery` TINYINT(1) DEFAULT 0," +
 	"`note` VARCHAR(255) NOT NULL," +
+	"`feedback` VARCHAR(255) NOT NULL," +
+	"`created_at` DATETIME DEFAULT NULL," +
+	"`updated_at` DATETIME DEFAULT NULL," +
 	"PRIMARY KEY (`id`)" +
 	") ENGINE = InnoDB DEFAULT CHARSET = utf8"
 
