@@ -41,6 +41,13 @@ func AppendQuery(query string, f map[string][]string) (string, []interface{}) {
 		query += newQuery
 	}
 
+	if f["brand_id"] != nil {
+		ids := f["brand_id"]
+		newQuery, newArgs, _ := sqlx.In(" AND brand_id IN (?) ", ids)
+		args = append(args, newArgs...)
+		query += newQuery
+	}
+
 	if f["name"] != nil {
 		name := f["name"]
 		nameLike := "%" + name[0] + "%"

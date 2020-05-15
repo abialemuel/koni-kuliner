@@ -18,7 +18,7 @@ func (mysql *Mysql) GetProducts(w http.ResponseWriter, r *http.Request, params h
 	var filteredArgs []interface{}
 
 	// filter query params
-	filter := utility.Filter(r, []string{"id", "name", "offset", "limit"})
+	filter := utility.Filter(r, []string{"id", "name", "brand_id", "offset", "limit"})
 
 	// build query
 	query := "SELECT * FROM products WHERE 1=1"
