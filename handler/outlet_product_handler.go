@@ -27,7 +27,7 @@ func (mysql *Mysql) GetOutletProducts(w http.ResponseWriter, r *http.Request, pa
 	var model []models.OutletProduct
 	mysql.db.Raw(query, filteredArgs...).Scan(&model)
 
-	getAllDetailRelation(mysql, &model)
+	getAllDetailRelationOutletProduct(mysql, &model)
 
 	result := utility.OutletProductResponse(model)
 	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, countOutletProduct(mysql))
@@ -44,7 +44,7 @@ func (mysql *Mysql) GetOutletProductDetails(w http.ResponseWriter, r *http.Reque
 		utility.SendErrorResponse(w, entity.OutletProductNotFoundError)
 		return
 	}
-	getSingleDetailRelation(mysql, &model)
+	GetSingleDetailRelationOutletProduct(mysql, &model)
 	result := utility.OutletProductDetailResponse(model)
 	utility.SendSuccessResponse(w, result, http.StatusOK)
 }
@@ -92,7 +92,7 @@ func (mysql *Mysql) CreateOutletProduct(w http.ResponseWriter, r *http.Request, 
 	}
 
 	mysql.db.Create(&model)
-	getSingleDetailRelation(mysql, &model)
+	GetSingleDetailRelationOutletProduct(mysql, &model)
 	result := utility.OutletProductDetailResponse(model)
 	utility.SendSuccessResponse(w, result, http.StatusCreated)
 }
@@ -134,7 +134,7 @@ func (mysql *Mysql) UpdateOutletProduct(w http.ResponseWriter, r *http.Request, 
 			OrderPrice: outletPoductRequest.OrderPrice,
 		},
 	)
-	getSingleDetailRelation(mysql, &model)
+	GetSingleDetailRelationOutletProduct(mysql, &model)
 	result := utility.OutletProductDetailResponse(model)
 	utility.SendSuccessResponse(w, result, http.StatusOK)
 }
@@ -162,28 +162,17 @@ func countOutletProduct(mysql *Mysql) int {
 	return count
 }
 
-func getAllDetailRelation(mysql *Mysql, outletProduct *[]models.OutletProduct) {
-	for i, op := range *outletProduct {
+func getAllDetailRelationOutletProduct(mysql *Mysql, outletProduct *[]models.OutletProduct) {
+	for i, m := range *outletProduct {
 		var product models.Product
-		mysql.db.First(&product, op.ProductID)
+		mysql.db.First(&product, m.ProductID)
 
 		var outlet models.Outlet
-		mysql.db.First(&outlet, op.OutletID)
+		mysql.db.First(&outlet, m.OutletID)
 
 		(*outletProduct)[i].Product = product
 		(*outletProduct)[i].Outlet = outlet
 	}
-}
-
-func getSingleDetailRelation(mysql *Mysql, outletProduct *models.OutletProduct) {
-	var product models.Product
-	mysql.db.First(&product, outletProduct.ProductID)
-
-	var outlet models.Outlet
-	mysql.db.First(&outlet, outletProduct.OutletID)
-
-	(*outletProduct).Product = product
-	(*outletProduct).Outlet = outlet
 }
 
 func ToOutletProductStateType(str string) models.OutletProductStateType {

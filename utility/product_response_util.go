@@ -9,8 +9,12 @@ func ProductResponse(product []models.Product) []response.ProductResponse {
 	var returnedResponse []response.ProductResponse
 	for _, product := range product {
 		singleResponse := response.ProductResponse{
-			ID:        product.ID,
-			Name:      product.Name,
+			ID:   product.ID,
+			Name: product.Name,
+			Brand: response.DetailBrandResponse{
+				ID:   product.Brand.ID,
+				Name: product.Brand.Name,
+			},
 			CreatedAt: product.CreatedAt,
 			UpdatedAt: product.UpdatedAt,
 		}
@@ -22,8 +26,12 @@ func ProductResponse(product []models.Product) []response.ProductResponse {
 func ProductDetailResponse(product models.Product) response.ProductResponse {
 	var returnedResponse response.ProductResponse
 	singleResponse := response.ProductResponse{
-		ID:        product.ID,
-		Name:      product.Name,
+		ID:   product.ID,
+		Name: product.Name,
+		Brand: response.DetailBrandResponse{
+			ID:   product.Brand.ID,
+			Name: product.Brand.Name,
+		},
 		CreatedAt: product.CreatedAt,
 		UpdatedAt: product.UpdatedAt,
 	}

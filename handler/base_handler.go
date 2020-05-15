@@ -5,6 +5,7 @@ import (
 
 	"github.com/jinzhu/gorm"
 	"github.com/julienschmidt/httprouter"
+	"github.com/koni-kuliner/models"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
@@ -25,4 +26,22 @@ func HealthzHandler(w http.ResponseWriter, r *http.Request, params httprouter.Pa
 
 func MetricHandler(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	promhttp.Handler().ServeHTTP(w, r)
+}
+
+func GetSingleDetailRelationOutletProduct(mysql *Mysql, outletProduct *models.OutletProduct) {
+	var product models.Product
+	mysql.db.First(&product, outletProduct.ProductID)
+
+	var outlet models.Outlet
+	mysql.db.First(&outlet, outletProduct.OutletID)
+
+	outletProduct.Product = product
+	outletProduct.Outlet = outlet
+}
+
+func GetSingleDetailRelationProduct(mysql *Mysql, product *models.Product) {
+	var brand models.Brand
+	mysql.db.First(&brand, product.BrandID)
+
+	product.Brand = brand
 }

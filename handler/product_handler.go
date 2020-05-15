@@ -27,6 +27,7 @@ func (mysql *Mysql) GetProducts(w http.ResponseWriter, r *http.Request, params h
 	// run query
 	var model []models.Product
 	mysql.db.Raw(query, filteredArgs...).Scan(&model)
+	getAllDetailRelationProduct(mysql, &model)
 	result := utility.ProductResponse(model)
 	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, countProduct(mysql))
 }
@@ -43,6 +44,7 @@ func (mysql *Mysql) GetProductDetails(w http.ResponseWriter, r *http.Request, pa
 		return
 	}
 
+	GetSingleDetailRelationProduct(mysql, &model)
 	result := utility.ProductDetailResponse(model)
 	utility.SendSuccessResponse(w, result, http.StatusOK)
 }
@@ -70,11 +72,13 @@ func (mysql *Mysql) CreateProduct(w http.ResponseWriter, r *http.Request, params
 	// assign body params
 	model := models.Product{
 		Name:      productRequest.Name,
+		BrandID:   productRequest.BrandID,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}
 
 	mysql.db.Create(&model)
+	GetSingleDetailRelationProduct(mysql, &model)
 	result := utility.ProductDetailResponse(model)
 	utility.SendSuccessResponse(w, result, http.StatusCreated)
 }
@@ -110,6 +114,7 @@ func (mysql *Mysql) UpdateProduct(w http.ResponseWriter, r *http.Request, params
 	}
 
 	mysql.db.Model(&model).Updates(productRequest)
+	GetSingleDetailRelationProduct(mysql, &model)
 	result := utility.ProductDetailResponse(model)
 	utility.SendSuccessResponse(w, result, http.StatusOK)
 }
@@ -135,4 +140,13 @@ func countProduct(mysql *Mysql) int {
 	var count int
 	mysql.db.Table("products").Count(&count)
 	return count
+}
+
+func getAllDetailRelationProduct(mysql *Mysql, product *[]models.Product) {
+	for i, m := range *product {
+		var brand models.Brand
+		mysql.db.First(&brand, m.BrandID)
+
+		(*product)[i].Brand = brand
+	}
 }
