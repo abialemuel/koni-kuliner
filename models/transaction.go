@@ -20,16 +20,17 @@ const (
 )
 
 type Transaction struct {
-	ID       int64
-	UserID   int
-	Amount   int
-	Note     string
-	Feedback string
-	// CartItems []CartItem
-	State     TransactionStateType
-	PoDate    time.Time
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID         int64
+	CustomerID int
+	Amount     int
+	Note       string
+	Feedback   string
+	Customer   Customer
+	CartItems  []CartItem
+	State      TransactionStateType
+	PoDate     time.Time
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 func (s TransactionStateType) ToString() string {

@@ -58,7 +58,7 @@ var create_table_outlet_products = "CREATE TABLE IF NOT EXISTS outlet_products (
 
 var create_table_cart_items = "CREATE TABLE IF NOT EXISTS cart_items (" +
 	"`id` INT(11) NOT NULL AUTO_INCREMENT," +
-	"`user_id` INT(11) DEFAULT NULL," +
+	"`customer_id` INT(11) DEFAULT NULL," +
 	"`outlet_product_id` INT(11) DEFAULT NULL," +
 	"`transaction_id` INT(11) DEFAULT NULL," +
 	"`price` INT(11) DEFAULT NULL," +
@@ -71,7 +71,7 @@ var create_table_cart_items = "CREATE TABLE IF NOT EXISTS cart_items (" +
 
 var create_table_transactions = "CREATE TABLE IF NOT EXISTS transactions (" +
 	"`id` INT(11) NOT NULL AUTO_INCREMENT," +
-	"`user_id` INT(11) DEFAULT NULL," +
+	"`customer_id` INT(11) DEFAULT NULL," +
 	"`amount` BIGINT DEFAULT 0," +
 	"`po_date` DATETIME DEFAULT NULL," +
 	"`state` TINYINT(1) DEFAULT 0," +
