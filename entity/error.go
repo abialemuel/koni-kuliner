@@ -84,4 +84,14 @@ var (
 		Code:       67111,
 		HttpStatus: http.StatusNotFound,
 	}
+	TransactionNotFoundError = CustomError{
+		Message:    "Transaction not found",
+		Code:       67111,
+		HttpStatus: http.StatusNotFound,
+	}
+	TransactionNotValidError = CustomError{
+		Message:    "Transaction not valid",
+		Code:       67112,
+		HttpStatus: http.StatusUnprocessableEntity,
+	}
 )

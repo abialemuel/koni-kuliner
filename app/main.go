@@ -54,6 +54,9 @@ func main() {
 	router.POST("/products", utility.BasicAuth(newHandler.CreateProduct))
 	router.DELETE("/products/:ID", utility.BasicAuth(newHandler.DeleteProduct))
 
+	// transactions resource
+	router.GET("/transactions", utility.BasicAuth(newHandler.GetTransactions))
+
 	fmt.Println("Connected to port 5000")
 	log.Fatal(http.ListenAndServe(":5000", router))
 }
