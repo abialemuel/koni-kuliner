@@ -27,7 +27,7 @@ func (mysql *Mysql) GetTransactions(w http.ResponseWriter, r *http.Request, para
 	getAllDetailRelationTransaction(mysql, &model)
 
 	result := utility.TransactionResponse(model)
-	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, countTransaction(mysql))
+	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, CountQuery(mysql, query, filteredArgs))
 }
 
 func (mysql *Mysql) GetTransactionDetails(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
@@ -41,7 +41,7 @@ func (mysql *Mysql) GetTransactionDetails(w http.ResponseWriter, r *http.Request
 		utility.SendErrorResponse(w, entity.TransactionNotFoundError)
 		return
 	}
-	// GetSingleDetailRelationTransaction(mysql, &model)
+	GetSingleDetailRelationTransaction(mysql, &model)
 	result := utility.TransactionDetailResponse(model)
 	utility.SendSuccessResponse(w, result, http.StatusOK)
 }
@@ -152,12 +152,6 @@ func (mysql *Mysql) DeleteTransaction(w http.ResponseWriter, r *http.Request, pa
 }
 
 // private func
-
-func countTransaction(mysql *Mysql) int {
-	var count int
-	mysql.db.Table("transactions").Count(&count)
-	return count
-}
 
 func getAllDetailRelationTransaction(mysql *Mysql, transaction *[]models.Transaction) {
 	for i, m := range *transaction {

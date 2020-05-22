@@ -30,7 +30,7 @@ func (mysql *Mysql) GetOutletProducts(w http.ResponseWriter, r *http.Request, pa
 	getAllDetailRelationOutletProduct(mysql, &model)
 
 	result := utility.OutletProductResponse(model)
-	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, countOutletProduct(mysql))
+	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, CountQuery(mysql, query, filteredArgs))
 }
 
 func (mysql *Mysql) GetOutletProductDetails(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
@@ -155,12 +155,6 @@ func (mysql *Mysql) DeleteOutletProduct(w http.ResponseWriter, r *http.Request, 
 }
 
 // private func
-
-func countOutletProduct(mysql *Mysql) int {
-	var count int
-	mysql.db.Table("outlet_products").Count(&count)
-	return count
-}
 
 func getAllDetailRelationOutletProduct(mysql *Mysql, outletProduct *[]models.OutletProduct) {
 	for i, m := range *outletProduct {

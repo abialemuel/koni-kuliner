@@ -19,6 +19,7 @@ func TransactionResponse(transaction []models.Transaction) []response.Transactio
 			Amount:    transaction.Amount,
 			State:     transaction.State.ToString(),
 			Delivery:  transaction.Delivery.ToString(),
+			Note:      transaction.Note,
 			PoDate:    transaction.PoDate,
 			CreatedAt: transaction.CreatedAt,
 			UpdatedAt: transaction.UpdatedAt,
@@ -28,9 +29,9 @@ func TransactionResponse(transaction []models.Transaction) []response.Transactio
 	return returnedResponse
 }
 
-func TransactionDetailResponse(transaction models.Transaction) response.TransactionResponse {
-	var returnedResponse response.TransactionResponse
-	singleResponse := response.TransactionResponse{
+func TransactionDetailResponse(transaction models.Transaction) response.TransactionDetailResponse {
+	var returnedResponse response.TransactionDetailResponse
+	singleResponse := response.TransactionDetailResponse{
 		ID: transaction.ID,
 		Customer: response.DetailCustomerResponse{
 			ID:      transaction.Customer.ID,
@@ -41,6 +42,8 @@ func TransactionDetailResponse(transaction models.Transaction) response.Transact
 		Amount:    transaction.Amount,
 		State:     transaction.State.ToString(),
 		Delivery:  transaction.Delivery.ToString(),
+		Note:      transaction.Note,
+		Feedback:  transaction.Feedback,
 		PoDate:    transaction.PoDate,
 		CreatedAt: transaction.CreatedAt,
 		UpdatedAt: transaction.UpdatedAt,

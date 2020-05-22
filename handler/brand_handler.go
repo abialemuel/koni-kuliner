@@ -28,7 +28,7 @@ func (mysql *Mysql) GetBrands(w http.ResponseWriter, r *http.Request, params htt
 	var model []models.Brand
 	mysql.db.Raw(query, filteredArgs...).Scan(&model)
 	result := utility.BrandResponse(model)
-	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, countBrand(mysql))
+	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, CountQuery(mysql, query, filteredArgs))
 }
 
 func (mysql *Mysql) GetBrandDetails(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
@@ -130,9 +130,3 @@ func (mysql *Mysql) DeleteBrand(w http.ResponseWriter, r *http.Request, params h
 }
 
 // private func
-
-func countBrand(mysql *Mysql) int {
-	var count int
-	mysql.db.Table("brands").Count(&count)
-	return count
-}

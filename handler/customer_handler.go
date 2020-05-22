@@ -28,7 +28,7 @@ func (mysql *Mysql) GetCustomers(w http.ResponseWriter, r *http.Request, params 
 	var model []models.Customer
 	mysql.db.Raw(query, filteredArgs...).Scan(&model)
 	result := utility.CustomerResponse(model)
-	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, countCustomer(mysql))
+	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, CountQuery(mysql, query, filteredArgs))
 }
 
 func (mysql *Mysql) GetCustomerDetails(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
@@ -132,9 +132,3 @@ func (mysql *Mysql) DeleteCustomer(w http.ResponseWriter, r *http.Request, param
 }
 
 // private func
-
-func countCustomer(mysql *Mysql) int {
-	var count int
-	mysql.db.Table("customers").Count(&count)
-	return count
-}

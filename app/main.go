@@ -56,6 +56,7 @@ func main() {
 
 	// transactions resource
 	router.GET("/transactions", utility.BasicAuth(newHandler.GetTransactions))
+	router.GET("/transactions/:ID", utility.BasicAuth(newHandler.GetTransactionDetails))
 
 	fmt.Println("Connected to port 5000")
 	log.Fatal(http.ListenAndServe(":5000", router))

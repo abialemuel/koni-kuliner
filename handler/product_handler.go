@@ -29,7 +29,7 @@ func (mysql *Mysql) GetProducts(w http.ResponseWriter, r *http.Request, params h
 	mysql.db.Raw(query, filteredArgs...).Scan(&model)
 	getAllDetailRelationProduct(mysql, &model)
 	result := utility.ProductResponse(model)
-	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, countProduct(mysql))
+	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, CountQuery(mysql, query, filteredArgs))
 }
 
 func (mysql *Mysql) GetProductDetails(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
@@ -135,12 +135,6 @@ func (mysql *Mysql) DeleteProduct(w http.ResponseWriter, r *http.Request, params
 }
 
 // private func
-
-func countProduct(mysql *Mysql) int {
-	var count int
-	mysql.db.Table("products").Count(&count)
-	return count
-}
 
 func getAllDetailRelationProduct(mysql *Mysql, product *[]models.Product) {
 	for i, m := range *product {

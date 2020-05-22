@@ -68,11 +68,12 @@ func AppendQuery(query string, f map[string][]string) (string, []interface{}) {
 	if f["offset"] == nil {
 		args = append(args, fmt.Sprint(0))
 		f["offset"] = []string{"0"}
-		query += " OFFSET ?"
+		query += "OFFSET ?"
 	} else {
 		args = append(args, f["offset"][0])
-		query += " OFFSET ?"
+		query += "OFFSET ?"
 	}
 
 	return query, args
+
 }

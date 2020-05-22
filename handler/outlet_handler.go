@@ -28,7 +28,7 @@ func (mysql *Mysql) GetOutlets(w http.ResponseWriter, r *http.Request, params ht
 	var model []models.Outlet
 	mysql.db.Raw(query, filteredArgs...).Scan(&model)
 	result := utility.OutletResponse(model)
-	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, countOutlet(mysql))
+	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, CountQuery(mysql, query, filteredArgs))
 }
 
 func (mysql *Mysql) GetOutletDetails(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
@@ -130,9 +130,3 @@ func (mysql *Mysql) DeleteOutlet(w http.ResponseWriter, r *http.Request, params 
 }
 
 // private func
-
-func countOutlet(mysql *Mysql) int {
-	var count int
-	mysql.db.Table("outlets").Count(&count)
-	return count
-}
