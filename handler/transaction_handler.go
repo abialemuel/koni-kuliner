@@ -14,7 +14,7 @@ func (mysql *Mysql) GetTransactions(w http.ResponseWriter, r *http.Request, para
 	var filteredArgs []interface{}
 
 	// filter query params
-	filter := utility.Filter(r, []string{"id", "customer_id", "offset", "limit"})
+	filter := utility.Filter(r, []string{"id", "customer_id", "state", "offset", "limit"})
 
 	// build query
 	query := "SELECT * FROM transactions WHERE 1=1"
@@ -31,13 +31,13 @@ func (mysql *Mysql) GetTransactions(w http.ResponseWriter, r *http.Request, para
 }
 
 func (mysql *Mysql) GetTransactionDetails(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	outletPoductID, _ := strconv.ParseInt(params.ByName("ID"), 10, 64)
+	transactionID, _ := strconv.ParseInt(params.ByName("ID"), 10, 64)
 
 	// run query
 	var model models.Transaction
 
 	// return not found is record not exist
-	if mysql.db.First(&model, outletPoductID).RecordNotFound() {
+	if mysql.db.First(&model, transactionID).RecordNotFound() {
 		utility.SendErrorResponse(w, entity.TransactionNotFoundError)
 		return
 	}
@@ -48,9 +48,9 @@ func (mysql *Mysql) GetTransactionDetails(w http.ResponseWriter, r *http.Request
 
 // func (mysql *Mysql) CreateTransaction(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 // 	// decode params
-// 	var outletPoductRequest request.TransactionCreateRequest
+// 	var transactionRequest request.TransactionCreateRequest
 
-// 	err := json.NewDecoder(r.Body).Decode(&outletPoductRequest)
+// 	err := json.NewDecoder(r.Body).Decode(&transactionRequest)
 // 	if err != nil {
 // 		utility.SendErrorResponse(w, entity.FailedDecodeJSONError)
 // 		return
@@ -58,7 +58,7 @@ func (mysql *Mysql) GetTransactionDetails(w http.ResponseWriter, r *http.Request
 
 // 	// validate body params
 // 	v := validator.New()
-// 	err = v.Struct(outletPoductRequest)
+// 	err = v.Struct(transactionRequest)
 
 // 	if err != nil {
 // 		println("error: " + err.Error())
@@ -66,26 +66,13 @@ func (mysql *Mysql) GetTransactionDetails(w http.ResponseWriter, r *http.Request
 // 		return
 // 	}
 
-// 	// TO DO: validate product & outlet
-// 	// var outlet models.Outlet
-// 	// var product models.Product
-// 	// if mysql.db.First(product, outletPoductRequest.ProductID).RecordNotFound() {
-// 	// 	utility.SendErrorResponse(w, entity.ProductNotValidError)
-// 	// 	return
-// 	// }
-
-// 	// if mysql.db.First(outlet, outletPoductRequest.OutletID).RecordNotFound() {
-// 	// 	utility.SendErrorResponse(w, entity.OutletNotValidError)
-// 	// 	return
-// 	// }
-
 // 	// assign body params
 // 	model := models.Transaction{
-// 		ProductID:  outletPoductRequest.ProductID,
-// 		OutletID:   outletPoductRequest.OutletID,
+// 		ProductID:  transactionRequest.ProductID,
+// 		OutletID:   transactionRequest.OutletID,
 // 		State:      models.TransactionStateActive,
-// 		Price:      outletPoductRequest.Price,
-// 		OrderPrice: outletPoductRequest.OrderPrice,
+// 		Price:      transactionRequest.Price,
+// 		OrderPrice: transactionRequest.OrderPrice,
 // 	}
 
 // 	mysql.db.Create(&model)
@@ -95,20 +82,20 @@ func (mysql *Mysql) GetTransactionDetails(w http.ResponseWriter, r *http.Request
 // }
 
 // func (mysql *Mysql) UpdateTransaction(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-// 	outletPoductID, _ := strconv.ParseInt(params.ByName("ID"), 10, 64)
+// 	transactionID, _ := strconv.ParseInt(params.ByName("ID"), 10, 64)
 
 // 	// run query
 // 	var model models.Transaction
 
 // 	// return not found if record not exist
-// 	if mysql.db.First(&model, outletPoductID).RecordNotFound() {
+// 	if mysql.db.First(&model, transactionID).RecordNotFound() {
 // 		utility.SendErrorResponse(w, entity.TransactionNotFoundError)
 // 		return
 // 	}
 
-// 	var outletPoductRequest request.TransactionUpdateRequest
+// 	var transactionRequest request.TransactionUpdateRequest
 
-// 	err := json.NewDecoder(r.Body).Decode(&outletPoductRequest)
+// 	err := json.NewDecoder(r.Body).Decode(&transactionRequest)
 // 	if err != nil {
 // 		utility.SendErrorResponse(w, entity.FailedDecodeJSONError)
 // 		return
@@ -116,7 +103,7 @@ func (mysql *Mysql) GetTransactionDetails(w http.ResponseWriter, r *http.Request
 
 // 	// validate body params
 // 	v := validator.New()
-// 	err = v.Struct(outletPoductRequest)
+// 	err = v.Struct(transactionRequest)
 
 // 	if err != nil {
 // 		println("error: " + err.Error())
@@ -126,9 +113,9 @@ func (mysql *Mysql) GetTransactionDetails(w http.ResponseWriter, r *http.Request
 
 // 	mysql.db.Model(&model).Updates(
 // 		models.Transaction{
-// 			State:      models.ToTransactionStateType(outletPoductRequest.State),
-// 			Price:      outletPoductRequest.Price,
-// 			OrderPrice: outletPoductRequest.OrderPrice,
+// 			State:      models.ToTransactionStateType(transactionRequest.State),
+// 			Price:      transactionRequest.Price,
+// 			OrderPrice: transactionRequest.OrderPrice,
 // 		},
 // 	)
 // 	GetSingleDetailRelationTransaction(mysql, &model)
@@ -137,13 +124,13 @@ func (mysql *Mysql) GetTransactionDetails(w http.ResponseWriter, r *http.Request
 // }
 
 func (mysql *Mysql) DeleteTransaction(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	outletPoductID, _ := strconv.ParseInt(params.ByName("ID"), 10, 64)
+	transactionID, _ := strconv.ParseInt(params.ByName("ID"), 10, 64)
 
 	// run query
 	var model models.Transaction
 
 	// return not found if record not exist
-	if mysql.db.First(&model, outletPoductID).RecordNotFound() {
+	if mysql.db.First(&model, transactionID).RecordNotFound() {
 		utility.SendErrorResponse(w, entity.TransactionNotFoundError)
 		return
 	}

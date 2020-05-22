@@ -129,7 +129,7 @@ func (mysql *Mysql) UpdateOutletProduct(w http.ResponseWriter, r *http.Request, 
 
 	mysql.db.Model(&model).Updates(
 		models.OutletProduct{
-			State:      ToOutletProductStateType(outletPoductRequest.State),
+			State:      models.ToOutletProductStateType(outletPoductRequest.State),
 			Price:      outletPoductRequest.Price,
 			OrderPrice: outletPoductRequest.OrderPrice,
 		},
@@ -167,16 +167,4 @@ func getAllDetailRelationOutletProduct(mysql *Mysql, outletProduct *[]models.Out
 		(*outletProduct)[i].Product = product
 		(*outletProduct)[i].Outlet = outlet
 	}
-}
-
-func ToOutletProductStateType(str string) models.OutletProductStateType {
-	var outletProduct models.OutletProductStateType
-
-	switch str {
-	case "active":
-		outletProduct = models.OutletProductStateActive
-	case "inactive":
-		outletProduct = models.OutletProductStateInactive
-	}
-	return outletProduct
 }

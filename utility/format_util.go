@@ -48,6 +48,13 @@ func AppendQuery(query string, f map[string][]string) (string, []interface{}) {
 		query += newQuery
 	}
 
+	if f["customer_id"] != nil {
+		ids := f["customer_id"]
+		newQuery, newArgs, _ := sqlx.In(" AND customer_id IN (?) ", ids)
+		args = append(args, newArgs...)
+		query += newQuery
+	}
+
 	if f["name"] != nil {
 		name := f["name"]
 		nameLike := "%" + name[0] + "%"
@@ -62,16 +69,16 @@ func AppendQuery(query string, f map[string][]string) (string, []interface{}) {
 		query += " LIMIT ?"
 	} else {
 		args = append(args, f["limit"][0])
-		query += " LIMIT ? "
+		query += " LIMIT ?"
 	}
 
 	if f["offset"] == nil {
 		args = append(args, fmt.Sprint(0))
 		f["offset"] = []string{"0"}
-		query += "OFFSET ?"
+		query += " OFFSET ?"
 	} else {
 		args = append(args, f["offset"][0])
-		query += "OFFSET ?"
+		query += " OFFSET ?"
 	}
 
 	return query, args

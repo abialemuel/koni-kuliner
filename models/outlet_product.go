@@ -31,3 +31,15 @@ func (s OutletProductStateType) ToString() string {
 	}
 	return types[s]
 }
+
+func ToOutletProductStateType(str string) OutletProductStateType {
+	var outletProduct OutletProductStateType
+
+	switch str {
+	case "active":
+		outletProduct = OutletProductStateActive
+	case "inactive":
+		outletProduct = OutletProductStateInactive
+	}
+	return outletProduct
+}
