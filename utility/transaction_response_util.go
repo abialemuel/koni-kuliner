@@ -9,13 +9,8 @@ func TransactionResponse(transaction []models.Transaction) []response.Transactio
 	var returnedResponse []response.TransactionResponse
 	for _, transaction := range transaction {
 		singleResponse := response.TransactionResponse{
-			ID: transaction.ID,
-			Customer: response.DetailCustomerResponse{
-				ID:      transaction.Customer.ID,
-				Name:    transaction.Customer.Name,
-				Address: transaction.Customer.Address,
-				Phone:   transaction.Customer.Phone,
-			},
+			ID:        transaction.ID,
+			Customer:  getDetailCustomerResponse(transaction),
 			CartItems: getDetailCartItemResponse(transaction),
 			Amount:    transaction.Amount,
 			State:     transaction.State.ToString(),
@@ -33,13 +28,8 @@ func TransactionResponse(transaction []models.Transaction) []response.Transactio
 func TransactionDetailResponse(transaction models.Transaction) response.TransactionDetailResponse {
 	var returnedResponse response.TransactionDetailResponse
 	singleResponse := response.TransactionDetailResponse{
-		ID: transaction.ID,
-		Customer: response.DetailCustomerResponse{
-			ID:      transaction.Customer.ID,
-			Name:    transaction.Customer.Name,
-			Address: transaction.Customer.Address,
-			Phone:   transaction.Customer.Phone,
-		},
+		ID:        transaction.ID,
+		Customer:  getDetailCustomerResponse(transaction),
 		CartItems: getDetailCartItemResponse(transaction),
 		Amount:    transaction.Amount,
 		State:     transaction.State.ToString(),
@@ -71,4 +61,15 @@ func getDetailCartItemResponse(transaction models.Transaction) []response.Detail
 		cartItems = append(cartItems, singleCart)
 	}
 	return cartItems
+}
+
+func getDetailCustomerResponse(transaction models.Transaction) response.DetailCustomerResponse {
+	var customer response.DetailCustomerResponse
+	customer = response.DetailCustomerResponse{
+		ID:      transaction.Customer.ID,
+		Name:    transaction.Customer.Name,
+		Address: transaction.Customer.Address,
+		Phone:   transaction.Customer.Phone,
+	}
+	return customer
 }
