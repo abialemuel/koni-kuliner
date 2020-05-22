@@ -12,7 +12,7 @@ type ProductResponse struct {
 	UpdatedAt time.Time           `json:"updated_at"`
 }
 
-type DetailBrandResponse struct {
+type DetailProductResponse struct {
 	ID   int64  `json:"id"`
 	Name string `json:"name"`
 }

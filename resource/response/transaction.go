@@ -37,15 +37,3 @@ type DetailCustomerResponse struct {
 	Address string `json:"address"`
 	Phone   string `json:"phone"`
 }
-
-type DetailCartItemResponse struct {
-	ID       int64                 `json:"id"`
-	Product  DetailProductResponse `json:"product"`
-	Quantity int                   `json:"quantity"`
-	Price    int                   `json:"price"`
-}
-
-type DetailProductResponse struct {
-	ID   int64  `json:"id"`
-	Name string `json:"name"`
-}

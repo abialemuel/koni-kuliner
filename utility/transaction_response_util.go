@@ -57,6 +57,7 @@ func getDetailCartItemResponse(transaction models.Transaction) []response.Detail
 			},
 			Quantity: cartItem.Quantity,
 			Price:    cartItem.Price,
+			Total:    cartItem.Price * cartItem.Quantity,
 		}
 		cartItems = append(cartItems, singleCart)
 	}

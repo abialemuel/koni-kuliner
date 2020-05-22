@@ -46,6 +46,7 @@ func main() {
 	router.GET("/outlet-products/:ID", utility.BasicAuth(newHandler.GetOutletProductDetails))
 	router.PATCH("/outlet-products/:ID", utility.BasicAuth(newHandler.UpdateOutletProduct))
 	router.POST("/outlet-products", utility.BasicAuth(newHandler.CreateOutletProduct))
+	router.DELETE("/outlet-products/:ID", utility.BasicAuth(newHandler.DeleteOutletProduct))
 
 	// products resource
 	router.GET("/products", utility.BasicAuth(newHandler.GetProducts))
@@ -57,6 +58,9 @@ func main() {
 	// transactions resource
 	router.GET("/transactions", utility.BasicAuth(newHandler.GetTransactions))
 	router.GET("/transactions/:ID", utility.BasicAuth(newHandler.GetTransactionDetails))
+
+	// cart-itemss resource
+	router.GET("/cart-items", utility.BasicAuth(newHandler.GetCartItems))
 
 	fmt.Println("Connected to port 5000")
 	log.Fatal(http.ListenAndServe(":5000", router))

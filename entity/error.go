@@ -74,6 +74,16 @@ var (
 		Code:       67112,
 		HttpStatus: http.StatusUnprocessableEntity,
 	}
+	CartItemNotFoundError = CustomError{
+		Message:    "CartItem not found",
+		Code:       67111,
+		HttpStatus: http.StatusNotFound,
+	}
+	CartItemNotValidError = CustomError{
+		Message:    "CartItem not valid",
+		Code:       67112,
+		HttpStatus: http.StatusUnprocessableEntity,
+	}
 	CustomerNotFoundError = CustomError{
 		Message:    "Customer not found",
 		Code:       67111,
