@@ -16,6 +16,7 @@ func TransactionResponse(transaction []models.Transaction) []response.Transactio
 				Address: transaction.Customer.Address,
 				Phone:   transaction.Customer.Phone,
 			},
+			CartItems: getDetailCartItemResponse(transaction),
 			Amount:    transaction.Amount,
 			State:     transaction.State.ToString(),
 			Delivery:  transaction.Delivery.ToString(),
@@ -39,6 +40,7 @@ func TransactionDetailResponse(transaction models.Transaction) response.Transact
 			Address: transaction.Customer.Address,
 			Phone:   transaction.Customer.Phone,
 		},
+		CartItems: getDetailCartItemResponse(transaction),
 		Amount:    transaction.Amount,
 		State:     transaction.State.ToString(),
 		Delivery:  transaction.Delivery.ToString(),
@@ -50,4 +52,23 @@ func TransactionDetailResponse(transaction models.Transaction) response.Transact
 	}
 	returnedResponse = singleResponse
 	return returnedResponse
+}
+
+// private func
+
+func getDetailCartItemResponse(transaction models.Transaction) []response.DetailCartItemResponse {
+	var cartItems []response.DetailCartItemResponse
+	for _, cartItem := range transaction.CartItems {
+		singleCart := response.DetailCartItemResponse{
+			ID: cartItem.ID,
+			Product: response.DetailProductResponse{
+				ID:   cartItem.OutletProduct.Product.ID,
+				Name: cartItem.OutletProduct.Product.Name,
+			},
+			Quantity: cartItem.Quantity,
+			Price:    cartItem.Price,
+		}
+		cartItems = append(cartItems, singleCart)
+	}
+	return cartItems
 }

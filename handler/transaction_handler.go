@@ -24,7 +24,7 @@ func (mysql *Mysql) GetTransactions(w http.ResponseWriter, r *http.Request, para
 	var model []models.Transaction
 	mysql.db.Raw(query, filteredArgs...).Scan(&model)
 
-	getAllDetailRelationTransaction(mysql, &model)
+	GetAllDetailRelationTransaction(mysql, &model)
 
 	result := utility.TransactionResponse(model)
 	utility.SendSuccessResponseWithLimitAndOffset(w, result, http.StatusOK, filter, CountQuery(mysql, query, filteredArgs))
@@ -152,12 +152,3 @@ func (mysql *Mysql) DeleteTransaction(w http.ResponseWriter, r *http.Request, pa
 }
 
 // private func
-
-func getAllDetailRelationTransaction(mysql *Mysql, transaction *[]models.Transaction) {
-	for i, m := range *transaction {
-		var customer models.Customer
-		mysql.db.First(&customer, m.CustomerID)
-
-		(*transaction)[i].Customer = customer
-	}
-}
