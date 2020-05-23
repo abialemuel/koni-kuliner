@@ -44,6 +44,7 @@ func GetAllDetailRelationTransaction(mysql *Mysql, transaction *[]models.Transac
 
 		var cartItems []models.CartItem
 		mysql.db.Where("transaction_id = ?", m.ID).Find(&cartItems)
+		GetAllDetailRelationCartItem(mysql, &cartItems)
 
 		(*transaction)[i].Customer = customer
 		(*transaction)[i].CartItems = cartItems

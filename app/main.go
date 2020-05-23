@@ -61,6 +61,9 @@ func main() {
 
 	// cart-itemss resource
 	router.GET("/cart-items", utility.BasicAuth(newHandler.GetCartItems))
+	router.PATCH("/cart-items/:ID", utility.BasicAuth(newHandler.UpdateCartItem))
+	router.POST("/cart-items", utility.BasicAuth(newHandler.CreateCartItem))
+	router.DELETE("/cart-items/:ID", utility.BasicAuth(newHandler.DeleteCartItem))
 
 	fmt.Println("Connected to port 5000")
 	log.Fatal(http.ListenAndServe(":5000", router))

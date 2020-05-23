@@ -10,6 +10,7 @@ type CartItemResponse struct {
 	Product         DetailProductResponse `json:"product"`
 	Price           int                   `json:"price"`
 	OrderPrice      int                   `json:"order_price"`
+	Quantity        int                   `json:"quantity"`
 	CreatedAt       time.Time             `json:"created_at"`
 	UpdatedAt       time.Time             `json:"updated_at"`
 }
