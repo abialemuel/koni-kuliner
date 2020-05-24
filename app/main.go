@@ -58,6 +58,7 @@ func main() {
 	// transactions resource
 	router.GET("/transactions", utility.BasicAuth(newHandler.GetTransactions))
 	router.GET("/transactions/:ID", utility.BasicAuth(newHandler.GetTransactionDetails))
+	router.PATCH("/transactions/:ID", utility.BasicAuth(newHandler.UpdateTransaction))
 	router.POST("/transactions", utility.BasicAuth(newHandler.CreateTransaction))
 
 	// cart-itemss resource

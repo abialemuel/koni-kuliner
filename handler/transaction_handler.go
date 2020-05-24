@@ -91,47 +91,49 @@ func (mysql *Mysql) CreateTransaction(w http.ResponseWriter, r *http.Request, pa
 	utility.SendSuccessResponse(w, result, http.StatusCreated)
 }
 
-// func (mysql *Mysql) UpdateTransaction(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-// 	transactionID, _ := strconv.ParseInt(params.ByName("ID"), 10, 64)
+func (mysql *Mysql) UpdateTransaction(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	transactionID, _ := strconv.ParseInt(params.ByName("ID"), 10, 64)
 
-// 	// run query
-// 	var model models.Transaction
+	// run query
+	var model models.Transaction
 
-// 	// return not found if record not exist
-// 	if mysql.db.First(&model, transactionID).RecordNotFound() {
-// 		utility.SendErrorResponse(w, entity.TransactionNotFoundError)
-// 		return
-// 	}
+	// return not found if record not exist
+	if mysql.db.First(&model, transactionID).RecordNotFound() {
+		utility.SendErrorResponse(w, entity.TransactionNotFoundError)
+		return
+	}
 
-// 	var transactionRequest request.TransactionUpdateRequest
+	var transactionRequest request.TransactionUpdateRequest
 
-// 	err := json.NewDecoder(r.Body).Decode(&transactionRequest)
-// 	if err != nil {
-// 		utility.SendErrorResponse(w, entity.FailedDecodeJSONError)
-// 		return
-// 	}
+	err := json.NewDecoder(r.Body).Decode(&transactionRequest)
+	if err != nil {
+		utility.SendErrorResponse(w, entity.FailedDecodeJSONError)
+		return
+	}
 
-// 	// validate body params
-// 	v := validator.New()
-// 	err = v.Struct(transactionRequest)
+	// validate body params
+	v := validator.New()
+	err = v.Struct(transactionRequest)
 
-// 	if err != nil {
-// 		println("error: " + err.Error())
-// 		utility.SendErrorResponse(w, entity.UnprocessableEntityError)
-// 		return
-// 	}
+	if err != nil {
+		println("error: " + err.Error())
+		utility.SendErrorResponse(w, entity.UnprocessableEntityError)
+		return
+	}
 
-// 	mysql.db.Model(&model).Updates(
-// 		models.Transaction{
-// 			State:      models.ToTransactionStateType(transactionRequest.State),
-// 			Price:      transactionRequest.Price,
-// 			OrderPrice: transactionRequest.OrderPrice,
-// 		},
-// 	)
-// 	GetSingleDetailRelationTransaction(mysql, &model)
-// 	result := utility.TransactionDetailResponse(model)
-// 	utility.SendSuccessResponse(w, result, http.StatusOK)
-// }
+	mysql.db.Model(&model).Updates(
+		models.Transaction{
+			State:    models.ToTransactionStateType(transactionRequest.State),
+			Delivery: models.ToTransactionDeliveryType(transactionRequest.Delivery),
+			PoDate:   transactionRequest.PoDate,
+			Note:     transactionRequest.Note,
+			Feedback: transactionRequest.Feedback,
+		},
+	)
+	GetSingleDetailRelationTransaction(mysql, &model)
+	result := utility.TransactionDetailResponse(model)
+	utility.SendSuccessResponse(w, result, http.StatusOK)
+}
 
 func (mysql *Mysql) DeleteTransaction(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 	transactionID, _ := strconv.ParseInt(params.ByName("ID"), 10, 64)
