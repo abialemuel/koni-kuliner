@@ -30,7 +30,7 @@ Application for my mom ❤️ ❤️ ❤️
 
 5. Try this
   ```
-  localhost/8000
+  localhost:5000
   ```
 
   
