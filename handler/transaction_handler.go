@@ -1,13 +1,16 @@
 package handler
 
 import (
+	"encoding/json"
 	"net/http"
 	"strconv"
 
 	"github.com/julienschmidt/httprouter"
 	"github.com/koni-kuliner/entity"
 	"github.com/koni-kuliner/models"
+	"github.com/koni-kuliner/resource/request"
 	"github.com/koni-kuliner/utility"
+	"gopkg.in/go-playground/validator.v9"
 )
 
 func (mysql *Mysql) GetTransactions(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
@@ -46,40 +49,47 @@ func (mysql *Mysql) GetTransactionDetails(w http.ResponseWriter, r *http.Request
 	utility.SendSuccessResponse(w, result, http.StatusOK)
 }
 
-// func (mysql *Mysql) CreateTransaction(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-// 	// decode params
-// 	var transactionRequest request.TransactionCreateRequest
+func (mysql *Mysql) CreateTransaction(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
+	// decode params
+	var transactionRequest request.TransactionCreateRequest
 
-// 	err := json.NewDecoder(r.Body).Decode(&transactionRequest)
-// 	if err != nil {
-// 		utility.SendErrorResponse(w, entity.FailedDecodeJSONError)
-// 		return
-// 	}
+	err := json.NewDecoder(r.Body).Decode(&transactionRequest)
+	if err != nil {
+		utility.SendErrorResponse(w, entity.FailedDecodeJSONError)
+		return
+	}
 
-// 	// validate body params
-// 	v := validator.New()
-// 	err = v.Struct(transactionRequest)
+	// validate body params
+	v := validator.New()
+	err = v.Struct(transactionRequest)
 
-// 	if err != nil {
-// 		println("error: " + err.Error())
-// 		utility.SendErrorResponse(w, entity.UnprocessableEntityError)
-// 		return
-// 	}
+	if err != nil {
+		println("error: " + err.Error())
+		utility.SendErrorResponse(w, entity.UnprocessableEntityError)
+		return
+	}
 
-// 	// assign body params
-// 	model := models.Transaction{
-// 		ProductID:  transactionRequest.ProductID,
-// 		OutletID:   transactionRequest.OutletID,
-// 		State:      models.TransactionStateActive,
-// 		Price:      transactionRequest.Price,
-// 		OrderPrice: transactionRequest.OrderPrice,
-// 	}
+	// assign body params
+	cartItems := getCartItemsFromRequest(mysql, transactionRequest)
 
-// 	mysql.db.Create(&model)
-// 	GetSingleDetailRelationTransaction(mysql, &model)
-// 	result := utility.TransactionDetailResponse(model)
-// 	utility.SendSuccessResponse(w, result, http.StatusCreated)
-// }
+	model := models.Transaction{
+		CustomerID: cartItems[0].CustomerID,
+		Note:       transactionRequest.Note,
+		PoDate:     transactionRequest.PoDate,
+		Delivery:   models.ToTransactionDeliveryType(transactionRequest.Delivery),
+		State:      models.TransactionStatePending,
+		Amount:     getCartItemsTotalAmount(cartItems),
+	}
+
+	mysql.db.Create(&model)
+
+	// update cartItems reference to created transaction
+	updateCartItemsTransactionID(mysql, cartItems, model.ID)
+
+	GetSingleDetailRelationTransaction(mysql, &model)
+	result := utility.TransactionDetailResponse(model)
+	utility.SendSuccessResponse(w, result, http.StatusCreated)
+}
 
 // func (mysql *Mysql) UpdateTransaction(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
 // 	transactionID, _ := strconv.ParseInt(params.ByName("ID"), 10, 64)
@@ -139,3 +149,29 @@ func (mysql *Mysql) DeleteTransaction(w http.ResponseWriter, r *http.Request, pa
 }
 
 // private func
+
+func getCartItemsFromRequest(mysql *Mysql, transactionRequest request.TransactionCreateRequest) []models.CartItem {
+	var cartItems []models.CartItem
+
+	mysql.db.Where("id = ?", transactionRequest.CartItemIDS).Find(&cartItems)
+
+	return cartItems
+}
+
+func getCartItemsTotalAmount(cartItems []models.CartItem) int {
+	var totalAmount int
+	for _, m := range cartItems {
+		totalAmount += m.Quantity * m.Price
+	}
+	return totalAmount
+}
+
+func updateCartItemsTransactionID(mysql *Mysql, cartItems []models.CartItem, transactionID int64) {
+	for _, m := range cartItems {
+		mysql.db.Model(&m).Updates(
+			models.CartItem{
+				TransactionID: transactionID,
+			},
+		)
+	}
+}

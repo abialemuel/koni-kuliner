@@ -67,3 +67,15 @@ func ToTransactionStateType(str string) TransactionStateType {
 	}
 	return transaction
 }
+
+func ToTransactionDeliveryType(str string) TransactionDeliveryType {
+	var transaction TransactionDeliveryType
+
+	switch str {
+	case "pick_up":
+		transaction = TransactionDeliveryPickUp
+	case "shipping":
+		transaction = TransactionDeliveryShipping
+	}
+	return transaction
+}

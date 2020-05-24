@@ -8,7 +8,7 @@ type CartItem struct {
 	ID              int64
 	CustomerID      int
 	OutletProductID int
-	TransactionID   int
+	TransactionID   int64
 	Price           int
 	OrderPrice      int
 	Quantity        int
