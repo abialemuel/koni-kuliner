@@ -10,7 +10,9 @@ type TransactionCreateRequest struct {
 }
 
 type TransactionUpdateRequest struct {
-	State    int    `json:"state"`
-	Delivery int    `json:"delivery"`
-	Note     string `json:"note"`
+	State    string    `json:"state"`
+	Delivery string    `json:"delivery"`
+	PoDate   time.Time `json:"po_date"`
+	Note     string    `json:"note"`
+	Feedback string    `json:"feedback"`
 }
