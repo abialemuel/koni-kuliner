@@ -20,7 +20,7 @@ func (mysql *Mysql) GetCartItems(w http.ResponseWriter, r *http.Request, params 
 	filter := utility.Filter(r, []string{"id", "customer_id", "offset", "limit"})
 
 	// build query
-	query := "SELECT * FROM cart_items WHERE 1=1"
+	query := "SELECT * FROM cart_items WHERE 1=1 AND transaction_id = 0"
 	query, filteredArgs = utility.AppendQuery(query, filter)
 
 	// run query
