@@ -21,11 +21,11 @@ env:
   GKE_PROJECT: ${{ secrets.GKE_PROJECT }}
   GKE_EMAIL: ${{ secrets.GKE_EMAIL }}
   GITHUB_SHA: ${{ github.sha }}
-  GKE_ZONE: us-west1-a
-  GKE_CLUSTER: example-gke-cluster
-  IMAGE: gke-test
+  GKE_ZONE: asia-southeast1-b
+  GKE_CLUSTER: hello-cluster	
+  IMAGE: koni-kuliner:v2
   REGISTRY_HOSTNAME: gcr.io
-  DEPLOYMENT_NAME: gke-test
+  DEPLOYMENT_NAME: koni-kuliner-web
 
 jobs:
   setup-build-publish-deploy:
@@ -37,6 +37,7 @@ jobs:
       uses: actions/checkout@v2
 
     # Setup gcloud CLI
+    - name: Set up Gcloud
     - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       with:
         version: '270.0.0'
