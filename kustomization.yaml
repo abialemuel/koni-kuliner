@@ -1,5 +1,6 @@
 commonLabels:
   app: koni-kuliner
 resources:
-- deployment.yaml
-- service.yaml
+- deploy/deployment.yaml
+- deploy/service.yaml
+- deploy/ingress.yaml
