@@ -23,7 +23,7 @@ env:
   GITHUB_SHA: ${{ github.sha }}
   GKE_ZONE: asia-southeast1-b
   GKE_CLUSTER: hello-cluster	
-  IMAGE: koni-kuliner:v2
+  IMAGE: koni-kuliner
   REGISTRY_HOSTNAME: gcr.io
   DEPLOYMENT_NAME: koni-kuliner-web
 
