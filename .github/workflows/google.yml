@@ -25,7 +25,7 @@ env:
   GKE_CLUSTER: hello-cluster	
   IMAGE: koni-kuliner
   REGISTRY_HOSTNAME: gcr.io
-  DEPLOYMENT_NAME: koni-kuliner-web
+  DEPLOYMENT_NAME: konikuliner-web
 
 jobs:
   setup-build-publish-deploy:

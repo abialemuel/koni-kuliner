@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: koni-kuliner-web
+  name: konikuliner-web
   labels:
-    app: koni-kuliner-web
+    app: konikuliner-web
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: koni-kuliner-web
+      app: konikuliner-web
   template:
     metadata:
       annotations:
         oncallPager: 800-555-1212
       labels:
-        app: koni-kuliner-web
+        app: konikuliner-web
     spec:
       containers:
       - image: nginx
