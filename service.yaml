@@ -1,9 +1,9 @@
-apiVersion: apps/v1
+apiVersion: v1
 kind: Service
 metadata:
-  name: web
+  name: koni-kuliner-web
 spec:
   ports:
   - port: 5000
     selector:
-      app: web
+      app: koni-kuliner-web
