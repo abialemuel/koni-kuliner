@@ -1,0 +1,5 @@
+commonLabels:
+  app: koni-kuliner
+resources:
+- deployment.yaml
+- service.yaml
