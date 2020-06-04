@@ -48,6 +48,13 @@ func AppendQuery(query string, f map[string][]string) (string, []interface{}) {
 		query += newQuery
 	}
 
+	if f["outlet_id"] != nil {
+		ids := f["outlet_id"]
+		newQuery, newArgs, _ := sqlx.In(" AND outlet_id IN (?) ", ids)
+		args = append(args, newArgs...)
+		query += newQuery
+	}
+
 	if f["customer_id"] != nil {
 		ids := f["customer_id"]
 		newQuery, newArgs, _ := sqlx.In(" AND customer_id IN (?) ", ids)

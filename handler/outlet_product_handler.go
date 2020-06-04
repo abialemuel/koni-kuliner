@@ -17,7 +17,7 @@ func (mysql *Mysql) GetOutletProducts(w http.ResponseWriter, r *http.Request, pa
 	var filteredArgs []interface{}
 
 	// filter query params
-	filter := utility.Filter(r, []string{"id", "offset", "limit"})
+	filter := utility.Filter(r, []string{"id", "outlet_id", "offset", "limit"})
 
 	// build query
 	query := "SELECT * FROM outlet_products WHERE 1=1"

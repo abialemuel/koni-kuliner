@@ -94,6 +94,11 @@ var (
 		Code:       67111,
 		HttpStatus: http.StatusNotFound,
 	}
+	SellerNotFoundError = CustomError{
+		Message:    "Seller not found",
+		Code:       67111,
+		HttpStatus: http.StatusNotFound,
+	}
 	TransactionNotFoundError = CustomError{
 		Message:    "Transaction not found",
 		Code:       67111,

@@ -15,7 +15,8 @@ var create_table_products = "CREATE TABLE IF NOT EXISTS products (" +
 	"`brand_id` INT(11) DEFAULT NULL," +
 	"`created_at` DATETIME DEFAULT NULL," +
 	"`updated_at` DATETIME DEFAULT NULL," +
-	"PRIMARY KEY (`id`)" +
+	"PRIMARY KEY (`id`)," +
+	"KEY `index_products_on_name` (`name`)" +
 	") ENGINE = InnoDB DEFAULT CHARSET = utf8"
 
 var create_table_outlets = "CREATE TABLE IF NOT EXISTS outlets (" +
@@ -23,7 +24,8 @@ var create_table_outlets = "CREATE TABLE IF NOT EXISTS outlets (" +
 	"`name` VARCHAR(55) NOT NULL," +
 	"`created_at` DATETIME DEFAULT NULL," +
 	"`updated_at` DATETIME DEFAULT NULL," +
-	"PRIMARY KEY (`id`)" +
+	"PRIMARY KEY (`id`)," +
+	"KEY `index_outlets_on_name` (`name`)" +
 	") ENGINE = InnoDB DEFAULT CHARSET = utf8"
 
 var create_table_brands = "CREATE TABLE IF NOT EXISTS brands (" +
@@ -31,7 +33,8 @@ var create_table_brands = "CREATE TABLE IF NOT EXISTS brands (" +
 	"`name` VARCHAR(55) NOT NULL," +
 	"`created_at` DATETIME DEFAULT NULL," +
 	"`updated_at` DATETIME DEFAULT NULL," +
-	"PRIMARY KEY (`id`)" +
+	"PRIMARY KEY (`id`)," +
+	"KEY `index_brands_on_name` (`name`)" +
 	") ENGINE = InnoDB DEFAULT CHARSET = utf8"
 
 var create_table_customers = "CREATE TABLE IF NOT EXISTS customers (" +
@@ -41,7 +44,22 @@ var create_table_customers = "CREATE TABLE IF NOT EXISTS customers (" +
 	"`phone` VARCHAR(20) NOT NULL," +
 	"`created_at` DATETIME DEFAULT NULL," +
 	"`updated_at` DATETIME DEFAULT NULL," +
-	"PRIMARY KEY (`id`)" +
+	"PRIMARY KEY (`id`)," +
+	"KEY `index_customers_on_name` (`name`)" +
+	") ENGINE = InnoDB DEFAULT CHARSET = utf8"
+
+var create_table_sellers = "CREATE TABLE IF NOT EXISTS sellers (" +
+	"`id` INT(11) NOT NULL AUTO_INCREMENT," +
+	"`name` VARCHAR(55) NOT NULL," +
+	"`username` VARCHAR(55) NOT NULL," +
+	"`password` VARCHAR(55) NOT NULL," +
+	"`address` VARCHAR(255) NOT NULL," +
+	"`phone` VARCHAR(20) NOT NULL," +
+	"`created_at` DATETIME DEFAULT NULL," +
+	"`updated_at` DATETIME DEFAULT NULL," +
+	"PRIMARY KEY (`id`)," +
+	"KEY `index_sellers_on_name` (`name`)," +
+	"KEY `index_sellers_on_username_password` (`username`, `password`)" +
 	") ENGINE = InnoDB DEFAULT CHARSET = utf8"
 
 var create_table_outlet_products = "CREATE TABLE IF NOT EXISTS outlet_products (" +
@@ -53,7 +71,9 @@ var create_table_outlet_products = "CREATE TABLE IF NOT EXISTS outlet_products (
 	"`created_at` DATETIME DEFAULT NULL," +
 	"`updated_at` DATETIME DEFAULT NULL," +
 	"`state` TINYINT(1) DEFAULT 0," +
-	"PRIMARY KEY (`id`)" +
+	"PRIMARY KEY (`id`)," +
+	"KEY `index_outlet_products_on_outlet_id` (`outlet_id`)," +
+	"KEY `index_outlet_products_on_state` (`state`)" +
 	") ENGINE = InnoDB DEFAULT CHARSET = utf8"
 
 var create_table_cart_items = "CREATE TABLE IF NOT EXISTS cart_items (" +
@@ -66,7 +86,9 @@ var create_table_cart_items = "CREATE TABLE IF NOT EXISTS cart_items (" +
 	"`quantity` INT(11) DEFAULT NULL," +
 	"`created_at` DATETIME DEFAULT NULL," +
 	"`updated_at` DATETIME DEFAULT NULL," +
-	"PRIMARY KEY (`id`)" +
+	"PRIMARY KEY (`id`)," +
+	"KEY `index_carts_on_customer_id` (`customer_id`)," +
+	"KEY `index_carts_on_outlet_product_id` (`outlet_product_id`)" +
 	") ENGINE = InnoDB DEFAULT CHARSET = utf8"
 
 var create_table_transactions = "CREATE TABLE IF NOT EXISTS transactions (" +
@@ -106,6 +128,7 @@ func main() {
 	db.MustExec(create_table_outlets)
 	db.MustExec(create_table_brands)
 	db.MustExec(create_table_customers)
+	db.MustExec(create_table_sellers)
 	db.MustExec(create_table_outlet_products)
 	db.MustExec(create_table_cart_items)
 	db.MustExec(create_table_transactions)
