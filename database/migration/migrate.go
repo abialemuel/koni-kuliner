@@ -22,10 +22,12 @@ var create_table_products = "CREATE TABLE IF NOT EXISTS products (" +
 var create_table_outlets = "CREATE TABLE IF NOT EXISTS outlets (" +
 	"`id` INT(11) NOT NULL AUTO_INCREMENT," +
 	"`name` VARCHAR(55) NOT NULL," +
+	"`seller_id` INT(11) DEFAULT NULL," +
 	"`created_at` DATETIME DEFAULT NULL," +
 	"`updated_at` DATETIME DEFAULT NULL," +
 	"PRIMARY KEY (`id`)," +
-	"KEY `index_outlets_on_name` (`name`)" +
+	"KEY `index_outlets_on_name` (`name`)," +
+	"KEY `index_outlets_on_seller_id` (`seller_id`)" +
 	") ENGINE = InnoDB DEFAULT CHARSET = utf8"
 
 var create_table_brands = "CREATE TABLE IF NOT EXISTS brands (" +

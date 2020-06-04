@@ -11,6 +11,7 @@ type Seller struct {
 	Password  string
 	Address   string
 	Phone     string
+	Outlets   []Outlet
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
