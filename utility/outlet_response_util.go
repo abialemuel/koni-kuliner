@@ -11,6 +11,7 @@ func OutletResponse(outlet []models.Outlet) []response.OutletResponse {
 		singleResponse := response.OutletResponse{
 			ID:        outlet.ID,
 			Name:      outlet.Name,
+			SellerID:  outlet.SellerID,
 			CreatedAt: outlet.CreatedAt,
 			UpdatedAt: outlet.UpdatedAt,
 		}
@@ -24,6 +25,7 @@ func OutletDetailResponse(outlet models.Outlet) response.OutletResponse {
 	singleResponse := response.OutletResponse{
 		ID:        outlet.ID,
 		Name:      outlet.Name,
+		SellerID:  outlet.SellerID,
 		CreatedAt: outlet.CreatedAt,
 		UpdatedAt: outlet.UpdatedAt,
 	}

@@ -13,6 +13,7 @@ var create_table_products = "CREATE TABLE IF NOT EXISTS products (" +
 	"`id` INT(11) NOT NULL AUTO_INCREMENT," +
 	"`name` VARCHAR(55) NOT NULL," +
 	"`brand_id` INT(11) DEFAULT NULL," +
+	"`seller_id` INT(11) DEFAULT NULL," +
 	"`created_at` DATETIME DEFAULT NULL," +
 	"`updated_at` DATETIME DEFAULT NULL," +
 	"PRIMARY KEY (`id`)," +

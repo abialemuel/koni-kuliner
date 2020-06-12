@@ -18,7 +18,7 @@ func (mysql *Mysql) GetOutlets(w http.ResponseWriter, r *http.Request, params ht
 	var filteredArgs []interface{}
 
 	// filter query params
-	filter := utility.Filter(r, []string{"id", "name", "offset", "limit"})
+	filter := utility.Filter(r, []string{"id", "name", "seller_id", "offset", "limit"})
 
 	// build query
 	query := "SELECT * FROM outlets WHERE 1=1"
@@ -70,6 +70,7 @@ func (mysql *Mysql) CreateOutlet(w http.ResponseWriter, r *http.Request, params 
 	// assign body params
 	model := models.Outlet{
 		Name:      outletRequest.Name,
+		SellerID:  outletRequest.SellerID,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}

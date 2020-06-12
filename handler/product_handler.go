@@ -18,7 +18,7 @@ func (mysql *Mysql) GetProducts(w http.ResponseWriter, r *http.Request, params h
 	var filteredArgs []interface{}
 
 	// filter query params
-	filter := utility.Filter(r, []string{"id", "name", "brand_id", "offset", "limit"})
+	filter := utility.Filter(r, []string{"id", "name", "brand_id", "seller_id", "offset", "limit"})
 
 	// build query
 	query := "SELECT * FROM products WHERE 1=1"
@@ -73,6 +73,7 @@ func (mysql *Mysql) CreateProduct(w http.ResponseWriter, r *http.Request, params
 	model := models.Product{
 		Name:      productRequest.Name,
 		BrandID:   productRequest.BrandID,
+		SellerID:  productRequest.SellerID,
 		CreatedAt: time.Now(),
 		UpdatedAt: time.Now(),
 	}

@@ -15,6 +15,7 @@ func ProductResponse(product []models.Product) []response.ProductResponse {
 				ID:   product.Brand.ID,
 				Name: product.Brand.Name,
 			},
+			SellerID:  product.SellerID,
 			CreatedAt: product.CreatedAt,
 			UpdatedAt: product.UpdatedAt,
 		}
@@ -32,6 +33,7 @@ func ProductDetailResponse(product models.Product) response.ProductResponse {
 			ID:   product.Brand.ID,
 			Name: product.Brand.Name,
 		},
+		SellerID:  product.SellerID,
 		CreatedAt: product.CreatedAt,
 		UpdatedAt: product.UpdatedAt,
 	}
